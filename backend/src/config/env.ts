@@ -8,7 +8,11 @@ const envSchema = z.object({
     DB_PORT: z.coerce.number(),
     DB_USER: z.string().min(1),
     DB_PASSWORD: z.string(),
-    DB_NAME: z.string().min(1)
+    DB_NAME: z.string().min(1),
+    SMTP_HOST: z.string().min(1),
+    SMTP_PORT: z.coerce.number(),
+    MAIL_FROM: z.string().min(1),
+    APP_URL: z.url()
 })
 
 const parsed = envSchema.safeParse(process.env);

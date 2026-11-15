@@ -5,6 +5,7 @@ import { notFound } from "./middleware/notFound.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { pool } from "./db/pool.js";
 import { env } from "./config/env.js";
+import { authRouter } from "./auth/auth.routes.js";
 
 export const app = express();
 
@@ -24,6 +25,6 @@ app.get("/api/v1/health", async (req, res) => {
 		});
 	}
 });
-
+app.use("/api/v1/auth", authRouter);
 app.use(notFound);
 app.use(errorHandler);
