@@ -9,6 +9,7 @@ import { generateToken, hashToken } from "../utils/tokens.js";
 import { sendMail } from "../utils/mailer.js";
 import { env } from "../config/env.js";
 import { escapeHtml } from "../utils/escapeHtml.js";
+import { signAccessToken } from "../utils/jwt.js";
 
 type RegisterInput = z.infer<typeof registerSchema>;
 async function sendActivationEmail(
@@ -118,4 +119,50 @@ export async function resendActivation(email: string) {
         } finally {
                 connection.release();
         }
+}
+
+export async function loginUser(email: string, password: string) {
+	const [rows] = await pool.execute<RowDataPacket[]>(
+		"SELECT id, email, first_name, last_name, role, password_hash, email_verified_at FROM users WHERE email = ?",
+		[email],
+	);
+	const user = rows[0];
+
+	// Prvo lozinka, pa tek onda aktivacija: bez tačne lozinke ne otkrivamo stanje naloga
+	const passwordMatch = user
+		? await bcrypt.compare(password, user.password_hash)
+		: false;
+	if (!user || !passwordMatch) {
+		throw new HttpError(
+			401,
+			"INVALID_CREDENTIALS",
+			"Pogrešan email ili lozinka.",
+		);
+	}
+	if (user.email_verified_at === null) {
+		throw new HttpError(
+			403,
+			"EMAIL_NOT_VERIFIED",
+			"Nalog nije aktiviran. Proverite mejl.",
+		);
+	}
+
+	// U bazu ide samo heš, klijent dobija pravi token
+	const { token, tokenHash } = generateToken();
+	await pool.execute(
+		"INSERT INTO refresh_tokens (user_id, token_hash, expires_at) VALUES (?, ?, DATE_ADD(UTC_TIMESTAMP(), INTERVAL 30 DAY))",
+		[user.id, tokenHash],
+	);
+
+	return {
+		accessToken: signAccessToken(user.id, user.role),
+		refreshToken: token,
+		user: {
+			id: user.id,
+			email: user.email,
+			firstName: user.first_name,
+			lastName: user.last_name,
+			role: user.role,
+		},
+	};
 }

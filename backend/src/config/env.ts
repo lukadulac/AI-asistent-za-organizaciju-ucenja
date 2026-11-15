@@ -12,7 +12,8 @@ const envSchema = z.object({
     SMTP_HOST: z.string().min(1),
     SMTP_PORT: z.coerce.number(),
     MAIL_FROM: z.string().min(1),
-    APP_URL: z.url()
+    APP_URL: z.url(),
+    JWT_SECRET: z.string().min(32),
 })
 
 const parsed = envSchema.safeParse(process.env);

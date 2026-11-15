@@ -27,3 +27,8 @@ export const registerSchema = z.object({
 export const resendActivationSchema = z.object({
 	email: emailField,
 });
+
+export const loginSchema = z.object({
+	email: emailField,
+	password: z.string().min(1, { message: "Lozinka je obavezna." }),
+});

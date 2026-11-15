@@ -1,8 +1,17 @@
 import { Router } from "express";
 import { validate } from "../middleware/validate.js";
 import { HttpError } from "../utils/HttpError.js";
-import { registerSchema, resendActivationSchema } from "./auth.schemas.js";
-import { activateUser, registerUser, resendActivation } from "./auth.service.js";
+import {
+	registerSchema,
+	resendActivationSchema,
+	loginSchema,
+} from "./auth.schemas.js";
+import {
+	activateUser,
+	registerUser,
+	resendActivation,
+	loginUser,
+} from "./auth.service.js";
 
 export const authRouter = Router();
 
@@ -47,11 +56,25 @@ function page(title: string, message: string) {
 <h1>${title}</h1><p>${message}</p></body></html>`;
 }
 
-authRouter.post("/resend-activation", validate(resendActivationSchema), async (req, res) => {
-	await resendActivation(req.body.email);
+authRouter.post(
+	"/resend-activation",
+	validate(resendActivationSchema),
+	async (req, res) => {
+		await resendActivation(req.body.email);
 
-	res.json({
+		res.json({
+			success: true,
+			data: {
+				message: "Ako nalog postoji i nije aktiviran, poslali smo novi link.",
+			},
+		});
+	},
+);
+
+authRouter.post("/login", validate(loginSchema), async (req, res) => {
+	const result = await loginUser(req.body.email, req.body.password);
+	return res.status(200).json({
 		success: true,
-		data: { message: "Ako nalog postoji i nije aktiviran, poslali smo novi link." },
+		data: { user: result.user, accessToken: result.accessToken, refreshToken: result.refreshToken },
 	});
 });
