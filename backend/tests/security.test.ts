@@ -80,7 +80,7 @@ describe("Opšta bezbednost", () => {
 });
 
 describe("Autorizacija (uloge i vlasništvo)", () => {
-	it("običan korisnik na admin ruti -> 403", { todo: "admin rute još ne postoje" }, async () => {
+	it("običan korisnik na admin ruti -> 403", async () => {
 		const { accessToken } = await createLoggedInUser();
 		const res = await api("GET", "/admin/access-logs", { token: accessToken });
 		assert.equal(res.status, 403);

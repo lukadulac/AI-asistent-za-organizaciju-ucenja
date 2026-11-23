@@ -3,7 +3,7 @@
 -- MySQL 8.4, InnoDB, utf8mb4
 -- Konvencije: id INT UNSIGNED AUTO_INCREMENT, sva vremena DATETIME u UTC,
 -- sva trajanja u MINUTIMA.
--- Tabelu za admin sesije pravi express-mysql-session sam, nije ovde.
+-- Admin se prijavljuje istim JWT loginom; pristup admin delu određuje users.role.
 -- =====================================================================
 
 SET NAMES utf8mb4;
