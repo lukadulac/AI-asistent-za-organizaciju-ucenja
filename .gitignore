@@ -3,3 +3,5 @@ node_modules/
 .DS_Store
 .agents
 skills-lock.json
+agent-docs/
+CLAUDE.md

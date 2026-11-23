@@ -47,14 +47,16 @@ CREATE TABLE email_tokens (
     REFERENCES users (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Refresh tokeni (30 dana); odjava i promena lozinke postavljaju revoked_at
+-- Refresh tokeni (30 dana); rotacija, odjava i promena lozinke postavljaju revoked_at.
+-- revoke_reason: ponovna upotreba 'rotated' tokena znači krađu -> opoziva se ceo lanac
 CREATE TABLE refresh_tokens (
-  id          INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user_id     INT UNSIGNED NOT NULL,
-  token_hash  CHAR(64)     NOT NULL,
-  device_info VARCHAR(255) NULL,                        -- iz User-Agent zaglavlja
-  expires_at  DATETIME     NOT NULL,
-  revoked_at  DATETIME     NULL,
+  id            INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id       INT UNSIGNED NOT NULL,
+  token_hash    CHAR(64)     NOT NULL,
+  device_info   VARCHAR(255) NULL,                      -- iz User-Agent zaglavlja
+  expires_at    DATETIME     NOT NULL,
+  revoked_at    DATETIME     NULL,
+  revoke_reason ENUM('rotated','logout','password_change','reuse_detected') NULL,
   created_at  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (id),
   UNIQUE KEY uq_refresh_tokens_hash (token_hash),
