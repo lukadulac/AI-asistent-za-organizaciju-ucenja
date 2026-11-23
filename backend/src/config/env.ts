@@ -13,6 +13,8 @@ const envSchema = z.object({
     SMTP_PORT: z.coerce.number(),
     MAIL_FROM: z.string().min(1),
     APP_URL: z.url(),
+    // Frontend: tu vodi link za reset lozinke
+    FRONTEND_URL: z.url(),
     JWT_SECRET: z.string().min(32),
 })
 
