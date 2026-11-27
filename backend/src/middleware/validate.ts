@@ -8,12 +8,13 @@ export function validate(schema: z.ZodType, source: Source = "body") {
 		const result = schema.safeParse(req[source]);
 
 		if (!result.success) {
+			const { formErrors, fieldErrors } = z.flattenError(result.error);
 			return res.status(400).json({
 				success: false,
 				error: {
 					code: "VALIDATION_ERROR",
 					message: "Neispravni podaci.",
-					details: z.flattenError(result.error).fieldErrors,
+					details: formErrors.length ? { ...fieldErrors, _errors: formErrors } : fieldErrors,
 				},
 			});
 		}

@@ -9,6 +9,7 @@ import { authRouter } from "./auth/auth.routes.js";
 import { adminRouter } from "./admin/admin.routes.js";
 import { requireAuth } from "./middleware/requireAuth.js";
 import { requireRole } from "./middleware/requireRole.js";
+import { subjectsRouter } from "./subjects/subjects.routes.js";
 
 export const app = express();
 
@@ -29,6 +30,7 @@ app.get("/api/v1/health", async (req, res) => {
 	}
 });
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/subjects", subjectsRouter)
 // Ne-admin dobija 403 za bilo koju /admin putanju, pre nego što se proveri da li ruta postoji
 app.use("/api/v1/admin", requireAuth, requireRole("admin"), adminRouter);
 app.use(notFound);
