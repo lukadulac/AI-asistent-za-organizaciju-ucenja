@@ -5,6 +5,7 @@ declare global {
 		interface Request {
 			// Postavlja requireAuth
 			user?: { userId: number; role: UserRole };
+			validated?: { params?: unknown; query?: unknown };
 		}
 	}
 }

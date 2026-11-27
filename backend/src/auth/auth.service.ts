@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import type { ResultSetHeader, RowDataPacket } from "mysql2";
 import type { Connection, PoolConnection } from "mysql2/promise";
-import { pool } from "../db/pool.js";
+import { pool, inTransaction } from "../db/pool.js";
 import { HttpError } from "../utils/HttpError.js";
 import { registerSchema } from "./auth.schemas.js";
 import type { z } from "zod";
@@ -14,25 +14,6 @@ import { signAccessToken, type UserRole } from "../utils/jwt.js";
 type RegisterInput = z.infer<typeof registerSchema>;
 
 const BCRYPT_ROUNDS = 12;
-
-// Pokreće fn u transakciji: commit ako uspe, rollback ako baci grešku
-async function inTransaction<T>(fn: (connection: PoolConnection) => Promise<T>) {
-	const connection = await pool.getConnection();
-	try {
-		await connection.beginTransaction();
-		const result = await fn(connection);
-		await connection.commit();
-		return result;
-	} catch (err) {
-		// Ako i rollback pukne (npr. prekinuta veza), ne sme da sakrije pravu grešku
-		await connection.rollback().catch((rollbackErr) => {
-			console.error("Rollback failed:", rollbackErr);
-		});
-		throw err;
-	} finally {
-		connection.release();
-	}
-}
 
 function invalidTokenError() {
 	return new HttpError(400, "INVALID_TOKEN", "Token je nevažeći ili je istekao.");
