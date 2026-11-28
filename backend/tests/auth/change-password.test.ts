@@ -1,6 +1,6 @@
 import { describe, it, after } from "node:test";
 import assert from "node:assert/strict";
-import { api, cleanup, createLoggedInUser, expectError, login } from "./helpers.js";
+import { api, cleanup, createLoggedInUser, expectError, login } from "../helpers.js";
 
 after(cleanup);
 

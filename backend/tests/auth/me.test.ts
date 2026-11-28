@@ -1,7 +1,7 @@
 import { describe, it, after } from "node:test";
 import assert from "node:assert/strict";
 import jwt from "jsonwebtoken";
-import { api, cleanup, createLoggedInUser, deleteUserById, expectError, JWT_SECRET } from "./helpers.js";
+import { api, cleanup, createLoggedInUser, deleteUserById, expectError, JWT_SECRET } from "../helpers.js";
 
 after(cleanup);
 

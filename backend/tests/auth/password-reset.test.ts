@@ -13,7 +13,7 @@ import {
 	registerUser,
 	SUBJECT_RESET,
 	uniqueEmail,
-} from "./helpers.js";
+} from "../helpers.js";
 
 after(cleanup);
 

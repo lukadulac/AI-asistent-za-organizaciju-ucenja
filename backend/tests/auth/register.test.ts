@@ -10,7 +10,7 @@ import {
 	registerUser,
 	SUBJECT_ACTIVATION,
 	uniqueEmail,
-} from "./helpers.js";
+} from "../helpers.js";
 
 after(cleanup);
 

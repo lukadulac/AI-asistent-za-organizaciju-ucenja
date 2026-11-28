@@ -8,7 +8,7 @@ import {
 	expectError,
 	expireRefreshTokens,
 	login,
-} from "./helpers.js";
+} from "../helpers.js";
 
 after(cleanup);
 

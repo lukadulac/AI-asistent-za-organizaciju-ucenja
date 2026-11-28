@@ -86,7 +86,7 @@ describe("Autorizacija (uloge i vlasništvo)", () => {
 		assert.equal(res.status, 403);
 	});
 
-	it("korisnik A ne može da čita resurs korisnika B", { todo: "resursi (subjects/tasks) još ne postoje" }, async () => {
+	it("korisnik A ne može da čita resurs korisnika B", async () => {
 		const a = await createLoggedInUser();
 		const b = await createLoggedInUser();
 		const created = await api("POST", "/subjects", { token: b.accessToken, body: { name: "Matematika" } });
